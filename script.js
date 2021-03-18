@@ -36,9 +36,17 @@ function addBookToLibrary(event) {
     viewBooks();
 }
 
-function createBookCard(book) {
+function createBookCard(book, index) {
     const bookCard = document.createElement('div');
     bookCard.className = 'book';
+    bookCard.setAttribute('data-index', index);
+
+    // create close button for each book card
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'close-book-btn';
+    closeBtn.textContent = '+';
+    closeBtn.addEventListener('click', deleteBook);
+    bookCard.appendChild(closeBtn);
 
     const CARD_LABELS = [new Label('title', null, book.title), new Label('author',
             'Author:', book.author), new Label('date', 'Year of Publication:', 
@@ -68,6 +76,11 @@ function createBookCard(book) {
     toggleInput.className = 'toggle-input';
     toggleInput.type = 'checkbox';
     toggleSpan.className = 'toggle-span';
+
+    // toggle button to read if book's read property is true
+    if (book.read) toggleInput.checked = true;
+
+    toggleInput.addEventListener('change', updateReadProp);
     
     toggleContainer.appendChild(toggleInput);
     toggleContainer.appendChild(toggleSpan);
@@ -81,8 +94,8 @@ function createBookCard(book) {
 function viewBooks() {
     const displayContainer = document.querySelector('#book-display');
     displayContainer.textContent = '';
-    library.map(book => {
-        const bookCard = createBookCard(book);
+    library.map((book, index) => {
+        const bookCard = createBookCard(book, index);
         displayContainer.appendChild(bookCard);
     });
 }
@@ -121,6 +134,22 @@ function disableError() {
     });
 }
 
+function updateReadProp(event) {
+    const bookIndex = event.path[3].dataset.index;
+    const readProperty = this.checked;
+    if (readProperty) {
+        library[bookIndex].read = true;
+    } else {
+        library[bookIndex].read = false;
+    }
+}
+
+function deleteBook(event) {
+    const bookIndex = event.path[1].dataset.index;
+    library.splice(bookIndex, 1);
+    viewBooks();
+}
+
 let library = [];
 
 const formContainer = document.querySelector('#form-container');
@@ -131,7 +160,7 @@ formContainer.addEventListener('click', e => {
 });
 
 const theHobbit = new Book('The Hobbit', 'J.R.R. Tolkien', '295', '1937', false);
-const theLordOfTheRings = new Book('The Lord of the Rings', 'J.R.R. Tolkien', '1137', '1954', false);
+const theLordOfTheRings = new Book('The Lord of the Rings', 'J.R.R. Tolkien', '1137', '1954', true);
 library.push(theHobbit, theLordOfTheRings);
 
 const form = document.querySelector('#add-form');
