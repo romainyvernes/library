@@ -1,16 +1,54 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
     <head>
         <link rel="stylesheet" href="style.css">
         <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
     </head>
     <body>
+        <div id="form-container">
+            <form id="add-form" novalidate>
+                <button type="button" id="close-form-btn">+</button>
+                <p id="form-header">Add New Book</p>
+                <div class="form-field">
+                    <label for="title">Title*</label>
+                    <p class="error-msg">*This is a required field</p>
+                    <input type="text" name="title" id="title" maxlength="50" required>
+                </div>
+                <div class="form-field">
+                    <label for="author">Author*</label>
+                    <p class="error-msg">*This is a required field</p>
+                    <input type="text" name="author" id="author" maxlength="50" required>
+                </div>
+                <div class="form-field">
+                    <label for="pages">Number of Pages*</label>
+                    <p class="error-msg">*This is a required field</p>
+                    <input type="number" name="pages" id="pages" min="0" max="1000000" required>
+                </div>
+                <div class="form-field">
+                    <label for="year">Year of Publication*</label>
+                    <p class="error-msg">*This is a required field</p>
+                    <input type="number" name="year" id="year" min="0" max="9999" required>
+                </div>
+                <div class="form-field">
+                    <label for="read">Have you read it already?*</label>
+                    <p class="error-msg">*This is a required field</p>
+                    <select name="read" id="read" required>
+                        <option value=""></option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <div id="submission-container">
+                    <button type="submit" id="submit-form">SUBMIT</button>
+                    <button type="reset" id="reset-form">CLEAR</button>
+                </div>
+            </form>
+        </div>
 
         <div id="book-display"></div>
 
-        <button id="add-book">+</button>
-
+        <button id="add-btn">+</button>
         
         <script src="script.js"></script>
 
