@@ -4,8 +4,35 @@
     <head>
         <link rel="stylesheet" href="style.css">
         <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
+        <link rel="icon" href="book.svg">
+        <title>My Library</title>
     </head>
     <body>
+
+        <header>
+            <div id="h1-container">
+                <img src="book.svg" alt="Two books, one on top of the other" height="60">
+                <h1>My Library</h1>
+            </div>
+            <div id="library-data">
+                <p id="total-books">Total books: <span>0</span></p>
+                <p id="unread-books">Unread books: <span>0</span></p>
+                <p id="read-books">Read books: <span>0</span></p>
+            </div>
+        </header>
+
+        <div id="middle-container">
+            <div id="sort-container">
+                <label for="sort-by">Sort By: </label>
+                <select name="sort-by" id="sort-by">
+                    <option value="add-date">Most recently added</option>
+                    <option value="title">Title</option>
+                    <option value="author">Author</option>
+                    <option value="year">Year</option>
+                </select>
+            </div>
+        </div>
+
         <div id="form-container">
             <form id="add-form" novalidate>
                 <button type="button" id="close-form-btn">+</button>

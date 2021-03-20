@@ -4,6 +4,7 @@ function Book(title, author, pageCount, year, read) {
     this.pageCount = pageCount;
     this.year = year;
     this.read = read;
+    this.addDate = Date.now();
 }
 
 function Label(name, content, value) {
@@ -92,12 +93,20 @@ function createBookCard(book, index) {
 }
 
 function viewBooks() {
+    const currentSortingValue = sortDropdown.value;
+    sortBooks(currentSortingValue);
+    
     const displayContainer = document.querySelector('#book-display');
     displayContainer.textContent = '';
     library.map((book, index) => {
         const bookCard = createBookCard(book, index);
         displayContainer.appendChild(bookCard);
     });
+
+    displayContainer.querySelectorAll('.book').forEach(book => 
+            toggleBookBckgrd(book));
+
+    updateLibraryData();
 }
 
 function displayForm() {
@@ -113,12 +122,10 @@ function hideForm() {
 function enableError(abort) {
     const fields = form.querySelectorAll('input, select');
     fields.forEach(field => {
-        field.style.borderColor = 'rgb(151, 151, 151)';
         const errorMsg = field.previousElementSibling;
         errorMsg.style.display = 'none';
         if (field.value === '') {
-            abort = true;
-            field.style.borderColor = 'red';         
+            abort = true;        
             errorMsg.style.display = 'inline-block';
         }
     })
@@ -128,26 +135,94 @@ function enableError(abort) {
 function disableError() {
     const fields = form.querySelectorAll('input, select');
     fields.forEach(field => {
-        field.style.borderColor = 'rgb(151, 151, 151)';
         const errorMsg = field.previousElementSibling;
         errorMsg.style.display = 'none';
     });
 }
 
 function updateReadProp(event) {
-    const bookIndex = event.path[3].dataset.index;
+    const bookCard = event.path[3];
+    const bookIndex = bookCard.dataset.index;
     const readProperty = this.checked;
     if (readProperty) {
         library[bookIndex].read = true;
     } else {
         library[bookIndex].read = false;
     }
+
+    toggleBookBckgrd(bookCard);
+    updateLibraryData();
 }
 
 function deleteBook(event) {
     const bookIndex = event.path[1].dataset.index;
     library.splice(bookIndex, 1);
     viewBooks();
+}
+
+function updateLibraryData() {
+    const totalBooks = document.querySelector('#total-books span');
+    const unreadBooks = document.querySelector('#unread-books span');
+    const readBooks = document.querySelector('#read-books span');
+    const readStatusCount = library.reduce(((obj, book) => {
+        if (book.read) {
+            obj.readCount ? obj.readCount += 1 : obj.readCount = 1;
+        } else {
+            obj.unreadCount ? obj.unreadCount += 1 : obj.unreadCount = 1;
+        }
+        return obj;
+    }), {});
+    
+    totalBooks.textContent = library.length ? library.length : 0;
+    unreadBooks.textContent = readStatusCount.unreadCount ? readStatusCount.unreadCount :
+            0;
+    readBooks.textContent = readStatusCount.readCount ? readStatusCount.readCount :
+            0;
+}
+
+function sortBooks(sortingValue) {
+    switch(sortingValue) {
+        case 'add-date':
+            library.sort((book1, book2) => book2.addDate - book1.addDate);
+            break;
+        case 'title':
+            library.sort((book1, book2) => {
+                const title1 = book1.title.toUpperCase();
+                const title2 = book2.title.toUpperCase();
+                if (title1 < title2) return -1;
+                if (title1 > title2) return 1;
+                return 0;
+            });
+            break;
+        case 'author':
+            library.sort((book1, book2) => {
+                const author1 = book1.author.toUpperCase();
+                const author2 = book2.author.toUpperCase();
+                const title1 = book1.title.toUpperCase();
+                const title2 = book2.title.toUpperCase();
+                
+                if (author1 < author2) return -1;
+                if (author1 > author2) return 1;
+                if (title1 < title2) return -1;
+                if (title1 > title2) return 1;
+
+                return 0;
+            });
+            break;
+        case 'year':
+            library.sort((book1, book2) => book1.year - book2.year);
+            break;
+    }
+}
+
+function toggleBookBckgrd(bookCard) {
+    const book = library[bookCard.dataset.index];
+    
+    if (book.read) {
+        bookCard.style.backgroundColor = 'rgb(48, 155, 27)';
+    } else {
+        bookCard.style.backgroundColor = 'rgb(48, 155, 27, .7)';
+    }
 }
 
 let library = [];
@@ -161,7 +236,8 @@ formContainer.addEventListener('click', e => {
 
 const theHobbit = new Book('The Hobbit', 'J.R.R. Tolkien', '295', '1937', false);
 const theLordOfTheRings = new Book('The Lord of the Rings', 'J.R.R. Tolkien', '1137', '1954', true);
-library.push(theHobbit, theLordOfTheRings);
+const carol = new Book('Carol', 'Patricia Highsmith', '204', '1952', true);
+library.push(theHobbit, theLordOfTheRings, carol);
 
 const form = document.querySelector('#add-form');
 form.addEventListener('submit', addBookToLibrary);
@@ -171,5 +247,8 @@ newBookBtn.addEventListener('click', displayForm);
 
 const closeFormBtn = document.querySelector('#close-form-btn');
 closeFormBtn.addEventListener('click', hideForm);
+
+const sortDropdown = document.querySelector('#sort-by');
+sortDropdown.addEventListener('change', viewBooks);
 
 viewBooks();
