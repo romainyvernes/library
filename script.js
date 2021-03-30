@@ -1,16 +1,20 @@
-function Book(title, author, pageCount, year, read) {
-    this.title = title;
-    this.author = author;
-    this.pageCount = pageCount;
-    this.year = year;
-    this.read = read;
-    this.addDate = Date.now();
+class Book {
+    constructor(title, author, pageCount, year, read) {
+        this.title = title;
+        this.author = author;
+        this.pageCount = pageCount;
+        this.year = year;
+        this.read = read;
+        this.addDate = Date.now();
+    }
 }
 
-function Label(name, content, value) {
-    this.name = name;
-    this.content = content;
-    this.value = value;
+class Label {
+    constructor(name, content, value) {
+        this.name = name;
+        this.content = content;
+        this.value = value;
+    }
 }
 
 function addBookToLibrary(event) {
