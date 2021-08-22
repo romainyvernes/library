@@ -42,8 +42,8 @@ function addBookToLibrary(event) {
 }
 
 function createBookCard(book, index) {
-    const bookCard = document.createElement('div');
-    bookCard.className = 'book';
+    const bookCard = document.createElement('article');
+    bookCard.className = 'book secondary-bg';
     bookCard.setAttribute('data-index', index);
 
     // create close button for each book card
