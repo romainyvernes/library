@@ -192,6 +192,11 @@ label[for="sort-by"] {
     padding: 0.5em 0.8em 1em 1.5em;
     font-size: 1.1em;
     box-shadow: 3px 3px 15px 1px black;
+    transition: 0.2s;
+}
+
+.book:hover {
+    transform: scale(1.1);
 }
 
 .book header {
@@ -237,12 +242,14 @@ label[for="sort-by"] {
     height: 1em;
 }
 
+/* is used only for its checkbox feature */
 .toggle-input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
+/* toggle button visible container */
 .toggle-span {
     position: absolute;
     cursor: pointer;
@@ -256,26 +263,35 @@ label[for="sort-by"] {
     background: #000;
 }
 
+/* actual toggle */
 .toggle-span::before {
     position: absolute;
     content: '';
     height: 90%;
     width: 40%;
     left: 1px;
-    top: 1px;
+    top: 5%;
     background-color: white;
     transition: .4s;
     border-radius: 50%;
 }
 
+/* change color of button's background when book is marked as read */
 .toggle-input:checked + .toggle-span {
     background-color: #9b1b70;
 }
 
+/* move toggle across button when book is marked as read */
 .toggle-input:checked + .toggle-span::before {
     -webkit-transform: translateX(1.2em);
-    -ms-transform: translateX(1.2em);
-    transform: translateX(1.2em);
+        -ms-transform: translateX(1.2em);
+            transform: translateX(1.2em);
+}
+
+/* when book is hovered, readjust vertical placement of toggle to keep aligned
+within its container */
+.book:hover .toggle-span::before {
+    top: 4%;
 }
 
 /*

@@ -9,6 +9,7 @@ function createBookCard(book, index) {
   // create close button to delete any given card
   const closeBtn = document.createElement('button');
   closeBtn.className = 'close-btn';
+  closeBtn.setAttribute('data-index', index);
 
   const title = document.createElement('h2');
   title.className = 'title';
@@ -49,6 +50,7 @@ function createBookCard(book, index) {
   toggleContainer.className = 'toggle-container';
   toggleInput.className = 'toggle-input';
   toggleInput.type = 'checkbox';
+  toggleInput.setAttribute('data-index', index);
   toggleSpan.className = 'toggle-span';
 
   // toggle button to read if book's read property is true
@@ -69,7 +71,13 @@ function displayBook(target, bookCard) {
   target.appendChild(bookCard);
 }
 
+function resetForm() {
+  const form = document.getElementById('add-form');
+  form.reset();
+}
+
 export {
   createBookCard,
   displayBook,
+  resetForm,
 };

@@ -2,12 +2,13 @@ import Book from './components/factory.js';
 import {
     createBookCard,
     displayBook,
+    resetForm,
 } from './components/DOM.js';
 
 function addBookToLibrary(event) {
     // prevent page refresh, which resets value of library
     event.preventDefault();
-    
+    console.log('here')
     /* cancel add if one of the fields is empty and change display of missing 
     fields */
     if (isIncomplete()) {
@@ -26,6 +27,8 @@ function addBookToLibrary(event) {
     
     // hide new book form
     toggleFormDisplay();
+    // reset form input and select fields
+    resetForm();
     // display new list of books
     viewBooks();
 }
@@ -46,16 +49,24 @@ function viewBooks() {
             toggleBookBackground(book));
 
     updateLibraryData();
+    // assign event listeners to "read" toggle buttons and card close buttons
+    createBookEvents();
 }
 
 function isIncomplete() {
     let incomplete = false;
     const fields = form.querySelectorAll('input, select');
     fields.forEach((field) => {
-        if (field.value === '') {
-            const errorMsg = (
-                document.querySelector(`label[for="${field.name}"] p`)
-            );        
+        const errorMsg = (
+            document.querySelector(`label[for="${field.name}"] p`)
+        );
+        /* prior to checking whether or not field is empty, hide its error 
+        message in case form was already submitted with that field empty, which
+        would have caused its error message to appear */
+        errorMsg.classList.add('invisible');
+        
+        if (field.value === '') { // display error messages for empty fields
+                    
             errorMsg.classList.remove('invisible');
 
             incomplete = true;
@@ -80,8 +91,7 @@ function disableError() {
 }
 
 function updateReadProp(event) {
-    const bookCard = event.path[3];
-    const bookIndex = bookCard.dataset.index;
+    const bookIndex = event.target.dataset.index;
     const readProperty = this.checked;
     if (readProperty) {
         library[bookIndex].read = true;
@@ -89,12 +99,14 @@ function updateReadProp(event) {
         library[bookIndex].read = false;
     }
 
+    const bookCard = document.querySelector(`[data-index="${bookIndex}"]`);
+    
     toggleBookBackground(bookCard);
     updateLibraryData();
 }
 
 function deleteBook(event) {
-    const bookIndex = event.path[1].dataset.index;
+    const bookIndex = event.target.dataset.index;
     library.splice(bookIndex, 1);
     viewBooks();
 }
@@ -166,6 +178,20 @@ function toggleBookBackground(bookCard) {
     }
 }
 
+function createBookEvents() {
+    // enable book deletion upon clicking "x" button in book card
+    const closeBtn = document.querySelectorAll('.book .close-btn');
+    closeBtn.forEach((btn) => {
+        btn.addEventListener('click', deleteBook);
+    });
+    
+    // enable card background change upon toggling of "read" button
+    const toggleInput = document.querySelectorAll('.toggle-input');
+    toggleInput.forEach((input) => {
+        input.addEventListener('change', updateReadProp);
+    });
+}
+
 let library = [];
 
 /* enable form closing when clicking on background */
@@ -200,15 +226,3 @@ sortDropdown.addEventListener('change', viewBooks);
 
 // display library
 viewBooks();
-
-// enable book deletion upon clicking "x" button in book card
-const closeBtn = document.querySelectorAll('.book .close-btn');
-closeBtn.forEach((btn) => {
-    btn.addEventListener('click', deleteBook);
-});
-
-// enable card background change upon toggling of "read" button
-const toggleInput = document.querySelectorAll('.toggle-input');
-toggleInput.forEach((input) => {
-    input.addEventListener('change', updateReadProp);
-});
