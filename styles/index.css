@@ -434,6 +434,10 @@ within its container */
         padding-bottom: 1.5em;
     }
 
+    .book:hover {
+        transform: none;
+    }
+
     .read-container {
         margin-top: auto;
     }
